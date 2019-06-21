@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:padding="5dp">
+
+    <TextView
+    android:id="@+id/daytv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="TextView" />
+
+    <ImageView
+    android:id="@+id/imagetv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:srcCompat="@drawable/ic_menu_send" />
+
+    <TextView
+    android:id="@+id/maxtemptv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="TextView" />
+
+    <TextView
+    android:id="@+id/mintemptv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="TextView" />
+
+    </LinearLayout>
+</LinearLayout>
