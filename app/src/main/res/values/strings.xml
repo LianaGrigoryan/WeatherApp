@@ -8,4 +8,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="page1name">PARTLY CLOUDY</string>
+    <string name="page1desc">The whole day will be changeable cloudy, \ndo not forget to grab a sweatshirt</string>
+    <string name="page2name">RAIN</string>
+    <string name="page2desc">At night, a large chance to rain, \ndo nor forget an umbrella if you go out</string>
+
 </resources>
