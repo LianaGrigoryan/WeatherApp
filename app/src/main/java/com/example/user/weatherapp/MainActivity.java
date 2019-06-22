@@ -1,7 +1,11 @@
 package com.example.user.weatherapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,8 +28,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
@@ -50,8 +56,9 @@ public class MainActivity extends AppCompatActivity
     TextView citytv, desctv, current_temp, lastUpdateDate;
     ImageView current_img;
     Button refreshButton;
-    WeatherForecast data = null;
     LinearLayout linearLayout;
+    SharedPreferences sPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +78,20 @@ public class MainActivity extends AppCompatActivity
 
         linearLayout = findViewById(R.id.dayslayout);
         lastUpdateDate = findViewById(R.id.lastUpdateDate);
-        addListeners();
+        sPref = getSharedPreferences("Data", MODE_PRIVATE);
+        editor = sPref.edit();
         api = WeatherAPI.getClient().create(WeatherAPI.ApiInterface.class);
-        getWeather();
+        addListeners();
+        if (checkInternetConnection()){
+            getWeather();
+//            Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_LONG).show();
+        }
+        else {
+            addCurrentWeather(new Gson().fromJson(sPref.getString("currentWeather", ""),WeatherDay.class));
+            addForecastWeateher(new Gson().fromJson(sPref.getString("forecastWeather", ""),WeatherForecast.class));
+            lastUpdateDate.setText(sPref.getString("currentDate", ""));
+            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void addListeners(){
@@ -85,7 +103,12 @@ public class MainActivity extends AppCompatActivity
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getWeather();
+                if (checkInternetConnection()) {
+                    getWeather();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -107,23 +130,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    //get current weather
     public void getWeather(){
         linearLayout.removeAllViews();
+
+        //get current weather
         Call<WeatherDay> callToday = api.getToday(cityName, units, api_key);
         callToday.enqueue(new Callback<WeatherDay>() {
             @Override
             public void onResponse(Call<WeatherDay> call, Response<WeatherDay> response) {
                 Log.e(TAG, "onResponse");
-                WeatherDay data = response.body();
-                Log.d("todayweather",data.getCity());
+                WeatherDay cureentData = response.body();
 
                 if (response.isSuccessful()) {
-                    String s = data.getDescription();
-                    citytv.setText(data.getCity().toUpperCase());
-                    desctv.setText(Character.toUpperCase(s.charAt(0)) + s.substring(1));
-                    current_temp.setText(data.getTempWithDegree());
-                    Glide.with(getApplicationContext()).load(data.getIconUrl()).into(current_img);
+                   addCurrentWeather(cureentData);
+                   editor.putString("currentWeather", new Gson().toJson(cureentData));
                 }
             }
 
@@ -141,20 +161,14 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<WeatherForecast> call, Response<WeatherForecast> response) {
                 Log.e(TAG, "onResponse");
-                data = response.body();
+                WeatherForecast data = response.body();
                 if (response.isSuccessful()) {
-                    int d = data.getItems().get(0).getDate().get(Calendar.DAY_OF_WEEK);         //get current day of week
-                    for (WeatherDay day : data.getItems()) {
-                        int dayOfWeek = day.getDate().get(Calendar.DAY_OF_WEEK);
-                        int h = day.getDate().get(Calendar.HOUR_OF_DAY);
-                        if (dayOfWeek != d) {                                                   //checking current day with taken day
-                            d = dayOfWeek;
-                            addViewDynamically(dayOfWeek,day);
-                        }
-                    }
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-                    lastUpdateDate.setText(dateFormat.format(new Date()));
+                    addForecastWeateher(data);
+                    editor.putString("forecastWeather", new Gson().toJson(data));
                 }
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                lastUpdateDate.setText(dateFormat.format(new Date()));
+                editor.putString("currentDate", dateFormat.format(new Date()));
             }
 
             @Override
@@ -165,6 +179,30 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    //function for adding current city's weather
+    private void addCurrentWeather(WeatherDay cureentData){
+        if (cureentData!=null) {
+            String s = cureentData.getDescription();
+            citytv.setText(cureentData.getCity().toUpperCase());
+            desctv.setText(Character.toUpperCase(s.charAt(0)) + s.substring(1));
+            current_temp.setText(cureentData.getTempWithDegree());
+            Glide.with(getApplicationContext()).load(cureentData.getIconUrl()).into(current_img);
+        }
+    }
+
+    // fanction for adding 5 days weather
+    private void addForecastWeateher(WeatherForecast data){
+        if (data!=null) {
+            int d = data.getItems().get(0).getDate().get(Calendar.DAY_OF_WEEK);         //get current day of week
+            for (WeatherDay day : data.getItems()) {
+                int dayOfWeek = day.getDate().get(Calendar.DAY_OF_WEEK);
+                if (dayOfWeek != d) {                                                   //checking current day with taken day
+                    d = dayOfWeek;
+                    addViewDynamically(dayOfWeek, day);
+                }
+            }
+        }
+    }
 
     //function add views to middle part dynamically
     private  void addViewDynamically(int dayOfWeek, WeatherDay day){
@@ -195,8 +233,21 @@ public class MainActivity extends AppCompatActivity
         linearLayout.addView(daylinearLayout);
     }
 
+    private boolean checkInternetConnection(){
+        ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cm.getActiveNetworkInfo();
+        boolean connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+        return  connected;
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        editor.apply();
     }
 }
