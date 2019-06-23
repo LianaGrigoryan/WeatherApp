@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
+    <string name="app_name">Weather App</string>
     <string name="main_page_name">Overview</string>
     <string name="string_help">Help</string>
     <string name="title_activity_main">Overview</string>

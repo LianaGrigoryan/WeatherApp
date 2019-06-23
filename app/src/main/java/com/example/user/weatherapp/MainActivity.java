@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                     addForecastWeateher(data);
                     editor.putString("forecastWeather", new Gson().toJson(data));
                 }
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 lastUpdateDate.setText(dateFormat.format(new Date()));
                 editor.putString("currentDate", dateFormat.format(new Date()));
             }
