@@ -7,4 +7,6 @@
     <color name="upperLayout">#FF9C01</color>
     <color name="refreshButton">#6300f6</color>
     <color name="middlieLayoutText">#9ea7ab</color>
+    <color name="trueInteractor">#3CD2D3</color>
+    <color name="falseInteractor">#797778</color>
 </resources>

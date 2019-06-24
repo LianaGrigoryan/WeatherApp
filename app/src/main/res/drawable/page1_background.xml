@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <gradient android:startColor="#fdfefe"
-        android:endColor="#f2fafb"
-        android:centerColor="#fafdfd"/>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- This is the line -->
+    <item  android:bottom="-5dp">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <stroke android:color="#000000" android:width="5dp"/>
+            <gradient android:startColor="#fdfefe"
+                android:endColor="#f2fafb"
+                android:centerColor="#fafdfd"/>
 
-</shape>
+        </shape>
+    </item>
+
+</layer-list>

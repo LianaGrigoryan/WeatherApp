@@ -18,8 +18,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/rain"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <LinearLayout
@@ -55,11 +54,5 @@
         android:gravity="bottom|center"
         android:layout_marginBottom="10dp"
         android:layout_weight="1">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/page2bottom"/>
     </LinearLayout>
 </LinearLayout>

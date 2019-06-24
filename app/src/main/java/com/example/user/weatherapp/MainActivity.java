@@ -41,6 +41,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.user.weatherapp.Fragments.PageFragment3.progressBar;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity
             lastUpdateDate.setText(sPref.getString("currentDate", ""));
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
+        progressBar.setVisibility(View.GONE);
     }
 
     private void addListeners(){

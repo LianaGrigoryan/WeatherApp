@@ -56,10 +56,5 @@
         android:layout_marginBottom="10dp"
         android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/page1bottom"/>
     </LinearLayout>
 </LinearLayout>
