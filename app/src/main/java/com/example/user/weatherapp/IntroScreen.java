@@ -36,4 +36,10 @@ public class IntroScreen extends AppCompatActivity {
         fragmentAdapter = new SlidePagerAdapter(getSupportFragmentManager(), list);
         pager.setAdapter(fragmentAdapter);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
 }
